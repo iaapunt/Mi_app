@@ -1,0 +1,11 @@
+{
+  "name": "Mi primera aplicación",
+  "short_name": "Mi App",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "description": "Mi primera aplicación creada desde Termux"
+}
+0
+
