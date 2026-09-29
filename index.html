@@ -1,3 +1,458 @@
-<!
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+nano index.html<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XaIA - Tu asistente personal</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:
+    radial-gradient(circle at 10% 0%,#172b66 0%,transparent 35%),
+    radial-gradient(circle at 100% 10%,#32105e 0%,transparent 35%),
+    #050914;
+  color:white;
+  min-height:100vh;
+  padding-bottom:100px;
+}
+
+.app{
+  max-width:650px;
+  margin:auto;
+  padding:18px;
+}
+
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:25px;
+}
+
+.logo{
+  font-size:42px;
+  font-weight:800;
+  letter-spacing:2px;
+}
+
+.logo span{
+  background:linear-gradient(90deg,#00d9ff,#9b5cff);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.subtitle{
+  color:#9ba9c7;
+  font-size:14px;
+}
+
+.status{
+  padding:12px 18px;
+  border-radius:30px;
+  border:1px solid rgba(0,217,255,.4);
+  background:rgba(255,255,255,.06);
+  color:#64ffd1;
+  font-weight:bold;
+}
+
+.hero{
+  padding:28px;
+  border-radius:30px;
+  background:linear-gradient(135deg,rgba(0,217,255,.15),rgba(130,70,255,.16));
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 15px 45px rgba(0,0,0,.35);
+}
+
+.hero h1{
+  font-size:34px;
+  margin-bottom:12px;
+}
+
+.hero h1 span{color:#45dcff}
+
+.hero p{
+  color:#c1cbe0;
+  font-size:18px;
+  line-height:1.5;
+}
+
+.voice{
+  width:100%;
+  margin-top:25px;
+  padding:18px;
+  border:0;
+  border-radius:22px;
+  color:white;
+  font-size:18px;
+  background:linear-gradient(135deg,#007bff,#6c3cff);
+  box-shadow:0 0 30px rgba(0,180,255,.35);
+}
+
+.section{
+  margin:28px 0 15px;
+  font-size:21px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
+
+.card{
+  min-height:155px;
+  padding:20px;
+  border-radius:25px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.06);
+  transition:.2s;
+}
+
+.card:active{
+  transform:scale(.96);
+}
+
+.card .icon{
+  font-size:34px;
+  margin-bottom:18px;
+}
+
+.card h2{font-size:20px}
+
+.card p{
+  margin-top:7px;
+  color:#aeb9d0;
+  font-size:14px;
+}
+
+.chat{border-color:#386dff}
+.research{border-color:#00d9a0}
+.finance{border-color:#ffad22}
+.camera{border-color:#e84cff}
+.documents{border-color:#00b7ff}
+.tools{border-color:#9866ff}
+
+.privacy{
+  margin-top:20px;
+  padding:20px;
+  border-radius:22px;
+  border:1px solid rgba(0,255,190,.35);
+  background:rgba(0,180,150,.1);
+}
+
+.stop{
+  width:100%;
+  margin-top:18px;
+  padding:18px;
+  border-radius:20px;
+  border:1px solid #ff426b;
+  background:#4b1020;
+  color:#ff7997;
+  font-size:17px;
+  font-weight:bold;
+}
+
+#message{
+  position:fixed;
+  top:20px;
+  left:50%;
+  transform:translateX(-50%);
+  display:none;
+  z-index:100;
+  padding:16px 22px;
+  border-radius:20px;
+  background:#111b32;
+  border:1px solid #00d9ff;
+}
+
+nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  display:flex;
+  justify-content:space-around;
+  padding:16px 10px 22px;
+  background:rgba(5,9,20,.96);
+  border-top:1px solid rgba(255,255,255,.1);
+}
+
+.nav{text-align:center;color:#9ca9c0}
+.nav.active{color:#39dcff}
+</style>
+</head>
+
+<body>
+
+<div id="message"></div>
+
+<div class="app">
+
+<header>
+  <div>
+    <div class="logo">Xa<span>IA</span></div>
+    <div class="subtitle">Tu asistente personal inteligente</div>
+  </div>
+  <div class="status">🟢 ACTIVA</div>
+</header>
+
+<section class="hero">
+  <h1>Hola, <span>Xavi</span> 👋</h1>
+  <p>Estoy aquí para ayudarte.<br>¿Qué exploramos hoy?</p>
+
+  <button class="voice" onclick="talk()">🎤 Habla conmigo</button>
+</section>
+
+<div class="section">Explorar</div>
+
+<div class="grid">
+
+<div class="card chat" onclick="openFeature('Chat')">
+<div class="icon">💬</div>
+<h2>Chat</h2>
+<p>Habla con XaIA</p>
+</div>
+
+<div class="card research" onclick="openFeature('Investigar')">
+<div class="icon">🔎</div>
+<h2>Investigar</h2>
+<p>Busca y verifica</p>
+</div>
+
+<div class="card finance" onclick="openFeature('Finanzas')">
+<div class="icon">📈</div>
+<h2>Finanzas</h2>
+<p>Mercados y cripto</p>
+</div>
+
+<div class="card camera" onclick="openFeature('Cámara IA')">
+<div class="icon">📷</div>
+<h2>Cámara IA</h2>
+<p>Analiza imágenes</p>
+</div>
+
+<div class="card documents" onclick="openFeature('Documentos')">
+<div class="icon">📄</div>
+<h2>Documentos</h2>
+<p>Archivos y notas</p>
+</div>
+
+<div class="card tools" onclick="openFeature('Herramientas')">
+<div class="icon">⚙️</div>
+<h2>Herramientas</h2>
+<p>Funciones de XaIA</p>
+</div>
+
+</div>
+
+<div class="privacy">
+🛡️ <b>XaIA Privacy Shield</b><br>
+Tus acciones sensibles requieren confirmación.
+</div>
+
+<button class="stop" onclick="stopXaIA()">🛑 PARAR XaIA</button>
+
+</div>
+
+<nav>
+<div class="nav active">⌂<br>Inicio</div>
+<div class="nav">💬<br>Chat</div>
+<div class="nav">🎤<br>Voz</div>
+<div class="nav">⚙️<br>Perfil</div>
+</nav>
+
+<script>
+function showMessage(text){
+  const m=document.getElementById('message');
+  m.innerText=text;
+  m.style.display='block';
+  setTimeout(()=>m.style.display='none',2500);
+}
+
+function talk(){
+  showMessage('🎤 XaIA está preparada para escucharte');
+}
+
+function openFeature(feature){
+
+  if(feature === 'Chat'){
+
+    document.querySelector('.app').innerHTML = `
+
+      <div style="padding:10px 0 20px;display:flex;align-items:center;gap:15px">
+
+        <button onclick="location.reload()"
+        style="background:rgba(255,255,255,.08);border:1px solid rgba(0,217,255,.4);color:white;width:48px;height:48px;border-radius:16px;font-size:24px">
+
+        ←
+
+        </button>
+
+        <div>
+          <div class="logo">Xa<span>IA</span></div>
+          <div class="subtitle">Chat inteligente</div>
+        </div>
+
+        <div style="margin-left:auto;color:#64ffd1">
+          🟢
+        </div>
+
+      </div>
+
+      <div id="chatMessages"
+      style="min-height:65vh;display:flex;flex-direction:column;gap:15px;padding:15px 0">
+
+        <div style="max-width:85%;padding:18px;border-radius:22px 22px 22px 5px;background:linear-gradient(135deg,rgba(0,217,255,.18),rgba(120,70,255,.15));border:1px solid rgba(0,217,255,.35)">
+
+        🤖 Hola Xavi 👋<br><br>
+
+        Soy XaIA. Ya puedes escribirme mensajes.<br><br>
+
+        El siguiente paso será conectar mi cerebro de IA real. 🚀
+
+        </div>
+
+      </div>
+
+      <div style="position:fixed;bottom:100px;left:15px;right:15px;z-index:1000;display:flex;gap:10px;max-width:620px;margin:auto">
+
+        <input
+        id="chatInput"
+        placeholder="Escribe a XaIA..."
+        style="flex:1;padding:18px;border-radius:22px;border:1px solid rgba(0,217,255,.4);background:rgba(10,20,40,.95);color:white;font-size:16px;outline:none">
+
+        <button onclick="sendMessage()"
+        style="width:58px;border-radius:20px;border:0;font-size:22px;background:linear-gradient(135deg,#00d9ff,#6c3cff);color:white">
+
+        ➤
+
+        </button>
+
+      </div>
+
+    `;
+
+  }else{
+
+ 
+   showMessage('🚀 '+feature+' estará disponible próximamente');
+
+  }
+
+}
+
+
+async function sendMessage(){
+
+  const input = document.getElementById('chatInput');
+
+  const text = input.value.trim();
+
+  if(!text) return;
+
+  const chat = document.getElementById('chatMessages');
+
+
+  const userMessage = document.createElement('div');
+
+  userMessage.innerText = text;
+
+  userMessage.style.cssText = `
+  max-width:80%;
+  align-self:flex-end;
+  padding:16px;
+  border-radius:22px 22px 5px 22px;
+  background:linear-gradient(135deg,#007bff,#6c3cff);
+  color:white;
+  `;
+
+  chat.appendChild(userMessage);
+
+  input.value = '';
+
+
+  const thinking = document.createElement('div');
+
+  thinking.innerHTML = `
+  🤖 XaIA está pensando...
+  `;
+
+  thinking.style.cssText = `
+  max-width:85%;
+  padding:18px;
+  border-radius:22px 22px 22px 5px;
+  background:rgba(0,217,255,.12);
+  border:1px solid rgba(0,217,255,.35);
+  color:#bfefff;
+  `;
+
+  chat.appendChild(thinking);
+
+
+  try {
+
+    const response = await fetch(
+      'http://127.0.0.1:5000/chat',
+      {
+        method: 'POST',
+
+        headers: {
+          'Content-Type': 'application/json'
+        },
+
+        body: JSON.stringify({
+          message: text
+        })
+      }
+    );
+
+
+    const data = await response.json();
+
+
+    thinking.remove();
+
+
+    const aiMessage = document.createElement('div');
+
+    aiMessage.innerText = '🤖 XaIA\n\n' + data.reply;
+
+    aiMessage.style.cssText = `
+    max-width:85%;
+    padding:18px;
+    border-radius:22px 22px 22px 5px;
+    background:linear-gradient(
+      135deg,
+      rgba(0,217,255,.18),
+      rgba(120,70,255,.15)
+    );
+    border:1px solid rgba(0,217,255,.35);
+    color:white;
+    `;
+
+    chat.appendChild(aiMessage);
+
+
+  } catch(error) {
+
+    thinking.innerText =
+      '⚠️ No puedo conectar con XaIA CORE';
+
+  }
+
+}
+
+
+function stopXaIA(){
+  document.querySelector('.status').innerHTML='🔴 APAGADA';
+  showMessage('🛑 XaIA ha detenido todas las tareas');
+}
+</script>
+
+</body>
+</html>
 0
 
