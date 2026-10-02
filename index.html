@@ -196,7 +196,7 @@ nav{
     <div class="logo">Xa<span>IA</span></div>
     <div class="subtitle">Tu asistente personal inteligente</div>
   </div>
-  <div class="status">🟢 ACTIVA</div>
+  <div id="xaiaStatus" class="status">🟢 ACTIVA</div>
 </header>
 
 <section class="hero">
@@ -253,7 +253,7 @@ nav{
 Tus acciones sensibles requieren confirmación.
 </div>
 
-<button class="stop" onclick="stopXaIA()">🛑 PARAR XaIA</button>
+<button id="powerButton" class="stop" onclick="toggleXaIA()">🛑 PARAR XaIA</button>
 
 </div>
 
@@ -446,10 +446,89 @@ async function sendMessage(){
 }
 
 
-function stopXaIA(){
-  document.querySelector('.status').innerHTML='🔴 APAGADA';
-  showMessage('🛑 XaIA ha detenido todas las tareas');
+async function updateXaIAStatus(){
+
+  const status = document.getElementById('xaiaStatus');
+  const button = document.getElementById('powerButton');
+
+  if(!status || !button) return;
+
+  try{
+
+    const response = await fetch('http://127.0.0.1:5000/status');
+    const data = await response.json();
+
+    if(data.active){
+
+      status.innerHTML = '🟢 ACTIVA';
+      button.innerHTML = '🛑 PARAR XaIA';
+
+    }else{
+
+      status.innerHTML = '🔴 APAGADA';
+      button.innerHTML = '🟢 ENCENDER XaIA';
+
+    }
+
+  }catch(error){
+
+    status.innerHTML = '⚠️ CORE OFFLINE';
+    button.innerHTML = '🟢 CONECTAR XaIA';
+
+  }
 }
+
+
+async function toggleXaIA(){
+
+  const status = document.getElementById('xaiaStatus');
+  const button = document.getElementById('powerButton');
+
+  if(!status || !button) return;
+
+  try{
+
+    const isActive = status.innerText.includes('ACTIVA');
+
+    const response = await fetch(
+      'http://127.0.0.1:5000/power',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          active: !isActive
+        })
+      }
+    );
+
+    const data = await response.json();
+
+    if(data.active){
+
+      status.innerHTML = '🟢 ACTIVA';
+      button.innerHTML = '🛑 PARAR XaIA';
+      showMessage('🟢 XaIA está encendida');
+
+    }else{
+
+      status.innerHTML = '🔴 APAGADA';
+      button.innerHTML = '🟢 ENCENDER XaIA';
+      showMessage('🛑 XaIA está apagada');
+
+    }
+
+  }catch(error){
+
+    showMessage('⚠️ No puedo conectar con XaIA CORE');
+
+  }
+
+}
+
+
+updateXaIAStatus();
 </script>
 
 </body>
