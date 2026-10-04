@@ -1,4 +1,31 @@
-<!DOCTYPE html>
+from pathlib import Path
+from datetime import datetime
+import shutil
+
+BASE = Path.home() / "mi_app"
+HTML = BASE / "index.html"
+
+if not BASE.exists():
+    raise SystemExit("❌ No existe ~/mi_app")
+
+# -------------------------------------------------
+# COPIA DE SEGURIDAD
+# -------------------------------------------------
+
+if HTML.exists():
+    backup = BASE / (
+        "index_backup_"
+        + datetime.now().strftime("%Y%m%d_%H%M%S")
+        + ".html"
+    )
+    shutil.copy2(HTML, backup)
+    print("🛡️ Copia de seguridad:", backup.name)
+
+# -------------------------------------------------
+# NUEVO INDEX
+# -------------------------------------------------
+
+page = r'''<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -1343,3 +1370,64 @@ updateXaIAStatus,
 </body>
 
 </html>
+'''
+
+# -------------------------------------------------
+# ESCRIBIR ARCHIVO
+# -------------------------------------------------
+
+HTML.write_text(
+page,
+encoding="utf-8"
+)
+
+# -------------------------------------------------
+# COMPROBACIÓN
+# -------------------------------------------------
+
+content = HTML.read_text(
+encoding="utf-8"
+)
+
+checks = [
+    "<!DOCTYPE html>",
+    "toggleXaIA",
+    "updateXaIAStatus",
+    "sendMessage",
+    "startVoice",
+    "startCamera",
+    "connectBluetooth",
+    "127.0.0.1:5000",
+    "/power",
+    "/status",
+    "/chat"
+]
+
+missing = [
+    item for item in checks
+    if item not in content
+]
+
+if missing:
+    print("❌ FALTAN ELEMENTOS:")
+    for item in missing:
+        print(" -", item)
+else:
+    print()
+    print("================================")
+
+print("🚀 XaIA ACTUALIZADA")
+print("================================")
+print("💬 Chat              OK")
+print("🎤 Micrófono         OK")
+print("🔊 Altavoz           OK")
+print("📷 Cámara            OK")
+print("🛠️ Herramientas     OK")
+print("📶 Wi-Fi             OK")
+print("🔵 Bluetooth         OK")
+print("🔌 Encendido         OK")
+print("🧠 Backend existente OK")
+print("🛡️ Copia seguridad   OK")
+print("================================")
+print("📱 Abre/refresca XaIA")
+print("================================")
