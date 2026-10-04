@@ -1201,6 +1201,93 @@ null;
 }
 
 
+
+if(!lastPhoto){
+
+alert(
+'📷 Primero captura una foto.'
+);
+
+return;
+
+}
+
+if(!xaiaActive){
+
+alert(
+'🛑 XaIA está apagada'
+);
+
+return;
+
+}
+
+addMessage(
+'🧠 XaIA está analizando la imagen...',
+'ai'
+);
+
+try{
+
+const response =
+await fetch(
+'http://192.168.0.28:5000/vision',
+{
+method:'POST',
+
+headers:{
+'Content-Type':'application/json'
+},
+
+body:JSON.stringify({
+
+image:lastPhoto,
+
+question:
+'Analiza esta imagen y dime claramente qué ves. Describe las personas, objetos, texto y detalles importantes que puedas identificar. No inventes nada.'
+
+})
+
+}
+);
+
+const data =
+await response.json();
+
+if(!response.ok){
+
+throw new Error(
+data.error ||
+'Error al analizar la imagen'
+);
+
+}
+
+addMessage(
+'👁️ XaIA: ' +
+(data.reply ||
+data.response ||
+data.message ||
+'No pude analizar la imagen.'),
+'ai'
+);
+
+}catch(error){
+
+console.error(
+'Error de visión:',
+error
+);
+
+addMessage(
+'⚠️ No he podido analizar la imagen: ' +
+error.message,
+'ai'
+);
+
+}
+
+}
 async function analyzePhoto(){
 
 if(!lastPhoto){
@@ -1213,10 +1300,80 @@ return;
 
 }
 
+if(!xaiaActive){
+
+alert(
+'🛑 XaIA está apagada'
+);
+
+return;
+
+}
+
 addMessage(
-'📷 Imagen preparada para el análisis de visión de XaIA.',
+'🧠 XaIA está analizando la imagen...',
 'ai'
 );
+
+try{
+
+const response =
+await fetch(
+'http://192.168.0.28:5000/vision',
+{
+method:'POST',
+
+headers:{
+'Content-Type':'application/json'
+},
+
+body:JSON.stringify({
+
+image:lastPhoto,
+
+question:
+'Analiza esta imagen y dime claramente qué ves. Describe las personas, objetos, texto y detalles importantes que puedas identificar. No inventes nada.'
+
+})
+
+}
+);
+
+const data =
+await response.json();
+
+if(!response.ok){
+
+throw new Error(
+data.error ||
+'Error al analizar la imagen'
+);
+
+}
+
+addMessage(
+'👁️ XaIA: ' +
+(data.reply ||
+data.response ||
+data.message ||
+'No pude analizar la imagen.'),
+'ai'
+);
+
+}catch(error){
+
+console.error(
+'Error de visión:',
+error
+);
+
+addMessage(
+'⚠️ No he podido analizar la imagen: ' +
+error.message,
+'ai'
+);
+
+}
 
 }
 
